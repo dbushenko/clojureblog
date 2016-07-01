@@ -1,0 +1,64 @@
+#
+###################################
+# Site wide configuration
+####################################
+#
+title:       "Clojure Blog"
+description: "Блог о Clojure и других технологиях, связанных на Lisp."
+url:         http://clojure.by
+
+#
+###################################
+# Jekyll configuration
+####################################
+#
+timezone:          Europe/Minsk
+markdown:          kramdown
+highlighter:       rouge
+excerpt_separator: <!--more-->
+permalink:         /articles/:year-:month/:title
+
+kramdown:
+  auto_ids:       true
+  footnote_nr:    1
+  entity_output:  as_char
+  toc_levels:     1..6
+  enable_coderay: false
+
+#
+###################################
+# Site Owner configuration
+####################################
+#
+owner:
+  name: Всё о Clojure
+  avatar: avatar.jpg
+  job: "и других lisp-ах"
+  bio: "Clojure -- динамически-типизированный язык программирования общего назначения, работающий на JVM. Clojure является диалектом Lisp-а и использует его философию 'код-как-данные', а также механизм макросов. Clojure -- в основном функциональный язык с хорошей поддержкой неизменяемых персистентных структур данных."
+  email: d.bushenko@gmail.com
+  disqus-shortname: clojureblog
+  twitter:
+  facebook: dmitry.bushenko
+  google:
+    plus:
+    analytics:
+    verify:
+    ad-client:
+    ad-slot:
+  bing-verify:
+  github: dbushenko
+  stackoverflow: #123456/username   from a "http://stackoverflow.com/users/123456/username" link
+  linkedin: dmitry-bushenko-58426342
+  xing: #username
+  instagram: #username
+  lastfm: #username
+  tumblr: #username
+  pinterest: #username
+  foursquare: #username
+  steam: #username
+  dribbble: #username
+  youtube: dbushenko
+  soundcloud: #username
+  weibo: #username
+  flickr: #username
+  codepen: #username
