@@ -5,6 +5,7 @@ excerpt: "Программы на Haskell получаются такие кра
 tags: [haskell]
 categories: [разработка]
 author: Дмитрий Бушенко
+comments: true
 image:
   feature: 2016-07-09-head.jpg
 ---
