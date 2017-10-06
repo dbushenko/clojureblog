@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>В Интернете кто-то не прав</title>
+  <meta name="description" content="Неделю назад прочитал книгу Егора Бугаенко 'Elegant Objects' и крепко задумался. Книга оказалась довольно противоречивая. Поразмышляв над прочитанным, решил ...">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://clojure.by/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://clojure.by/css/main.css">
+
+  <link rel="canonical" href="http://clojure.by/articles/2016-07/elegant-objects">
+  <link rel="alternate" type="application/rss+xml" title="Clojure Blog" href="http://clojure.by/feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://clojure.by/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://clojure.by/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://clojure.by/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://clojure.by/" class="author_name">Всё о Clojure</a>
+  <span class="author_job">и других lisp-ах</span>
+  <span class="author_bio mbm">Clojure -- динамически-типизированный язык программирования общего назначения, работающий на JVM. Clojure является диалектом Lisp-а и использует его философию 'код-как-данные', а также механизм макросов. Clojure -- в основном функциональный язык с хорошей поддержкой неизменяемых персистентных структур данных.</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://clojure.by/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://clojure.by/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://clojure.by/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('d.bushenko@gmail.com', 'Hello from website');</script>
+      </li>
+    
+    
+    <li><a href="http://facebook.com/dmitry.bushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-facebook"></i></a></li>
+    
+    <li><a href="http://linkedin.com/in/dmitry-bushenko-58426342" class="social-link-item" target="_blank"><i class="fa fa-fw fa-linkedin"></i></a></li>
+    
+    
+    
+    <li><a href="http://github.com/dbushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    <li><a href="https://youtube.com/user/dbushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-youtube"></i></a></li>
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a href="http://clojure.by/" >На главную</a><br/><br/>
+
+<div class="post-image-feature">
+  <img class="feature-image" src="http://clojure.by/img/2016-07-26.jpg" alt="В Интернете кто-то не прав feature image">
+
+  
+</div><!-- /.image-wrap -->
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="В Интернете кто-то не прав">В Интернете кто-то не прав</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        26 JUL 2016
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    6 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>Книга Егора Бугаенко <a href="http://www.yegor256.com/elegant-objects.html">Elegant Objects</a> поднимает проблему поддерживаемости кода. Это большая редкость среди того огромного количества книг по программированию, которые учат просто писать код, не задумываясь о том, что с ним будет дальше.</p>
+
+<p>Подход Егора очень необычен для программистов, никогда не имевших дело с функциональными языками. Честно говоря, до личной встречи с Егором я думал, что он позаимствовал большинство из своих решений в Haskell. Про одно из таких решений я бы хотел поговорить.</p>
+
+<p>В <a href="#link1">[1]</a> Егор рассуждает о том, почему не следует использовать разделяемые константы. Вкратце его аргументы такие. Разделяемые константы: 1) добавляют связанности между объектами; 2) не имеют никакой смысловой нагрузки, т.к. они оторваны от контекста; 3) не являются антропоморфными объектами.</p>
+
+<p>Вообще, антропоморфность, наиболее ярко описанная в <a href="#link2">[2]</a>, не является необходимым свойством объекта. Для Гради Буча, например, <em>объект</em> – сущность обладающая поведением <a href="#link3">[3]</a>. У констант поведения, понятное дело, нету.</p>
+
+<p>Константы в Java – это просто разделяемые значения, которые применяются в различных частях программы. Поэтому Егор предлагает создавать объекты, инкапсулирующие константу внутри себя, и применяющие её при помощи собственных методов. Это такой <em>inversion of control</em>, когда не ваш код использует константу, а обращаетесь к константному объекту, чтобы он что-то сделал для вас.</p>
+
+<p>Вместо такого:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Constants</span> <span class="o">{</span>
+   <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">NEWLINE</span> <span class="o">=</span> <span class="s">"\r\n"</span><span class="o">;</span>
+ <span class="o">}</span>
+
+<span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello"</span> <span class="o">+</span> <span class="n">Constants</span><span class="o">.</span><span class="na">NEWLINE</span><span class="o">);</span></code></pre></figure>
+
+<p>должно быть такое:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NewLine</span> <span class="o">{</span>
+   <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span><span class="n">String</span> <span class="n">src</span><span class="o">)</span> <span class="o">{</span>
+     <span class="k">return</span> <span class="n">src</span> <span class="o">+</span> <span class="s">"\r\n"</span><span class="o">;</span>
+   <span class="o">}</span>
+ <span class="o">}</span>
+
+<span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="n">NewLine</span><span class="o">().</span><span class="na">apply</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">));</span></code></pre></figure>
+
+<p>Это интересный подход, здорово напоминающий числа Чёрча <a href="#link4">[4]</a>, где число представляется не значением <em>n</em>, а функцией, которая применяется <em>n</em> раз. Проблема такого подхода в том, что вместо нескольких классов, содержащих в себе нужные константы, появится гигантское количество константных классов, в которых будет крайне сложно разобраться.</p>
+
+<p>Егор пишет: <em>“I do mean that the more classes you have in your application, the better its design and more maintainable it is”.</em></p>
+
+<p>На первый взгляд всё правильно: большое количество классов означает, что они будут маленькими, и их будет легко понять по отдельности. Но главная беда здесь в том, что разобраться, как их комбинировать, – <em>крайне сложно</em>.</p>
+
+<p class="notice">В программировании мы всегда ищем золотую середину между большим и малым числом модулей, между большим и малым их размерами. Большое число малых модулей повышает читабельность каждого из них в отдельности, но сильно усложняет понимание того, как их комбинировать. Малое число больших модулей, напротив, легче понять, как комбинировать, нежели как они устроены внутри. Любая из этих двух крайностей сделает код нечитабельным.</p>
+
+<p>Чтобы проиллюстрировать проблему на примере Java-кода, взгляните хотя бы, на код фреймворка <a href="https://github.com/yegor256/takes/tree/master/src/main/java/org/takes/rq">Takes</a>, написанный как раз в таком стиле. Посмотрите и попробуйте разобраться, как сформировать нужный вам Request.</p>
+
+<p>На конференции JavaDay’2016 в Минске Егору задали вопрос, как он борется вот с этой крайностью. Ответ Егора был такой, что если кому что не понятно во фреймворке, то ему задают вопросы и он тогда отвечает. И Егор признает проблему, но считает, что просто пока не разработали нужные инструменты, позволяющие быстро разобраться, как комбинировать такие маленькие классы.</p>
+
+<p>В своей <a href="/articles/2016-07/why-not-haskell">статье</a> о Haskell я уже писал, сколько проблем добавляет чрезмерное количество типов. Даже на то, чтобы разобраться с какой-нибудь маленькой и простой библиотекой может уйти уйма времени, если в ней используется пара десятков типов. А уж чтобы применить их правильно – так на это могут уйти часы борьбы с ошибками компиляции. Поэтому здесь из своего опыта я утверждаю, что <em>большое количество маленьких классов является не меньшей проблемой, чем малое количество больших классов</em>.</p>
+
+<p>Между прочим, в академической среде тоже осознали эту проблему. Ведутся уже даже не теоретические, а вполне практические разработки <a href="#link5">[5]</a>, упрощающие поиск подходящего типа среди доступных. Но, прошу заметить, речь идет о совершенно новом языке программирования <a href="http://idris-lang.org/">Idris</a>, чрезвычайно сложном и супер-модерновом. До Java эти разработки дойдут еще ох как не скоро, если вообще дойдут в силу своей непомерной сложности.</p>
+
+<p>Есть и другой подход, полностью противоположный, ставящий во главу угла <em>простоту</em>. В Clojure предлагается не создавать новые типы на всё подряд, а пользоваться существующими: списками, векторами, отображениями, множествами. Лично мне такой подход нравится намного больше по очевидной причине: чтобы воспользоваться какой-то функцией, не нужно бесконечно разбираться, какие типы или их комбинации к ней подходят. В Clojure часто достаточно взглянуть на один единственный пример – и уже всё понятно. Конечно, можно неправильно воспользоваться и стандартными типами, но это можно по крайней мере выяснить “методом научного тыка”. И несравненно дольше разбираться вот с такой, например, <a href="https://github.com/yesodweb/wai/blob/master/warp/Network/Wai/Handler/Warp/HTTP2.hs">сигнатурой</a>, где каждый параметр представляет свой тип, с которым не сразу еще и поймёшь как работать:</p>
+
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="n">http2</span> <span class="o">::</span> <span class="kt">Connection</span> <span class="o">-&gt;</span> <span class="kt">InternalInfo1</span> <span class="o">-&gt;</span> <span class="kt">SockAddr</span> <span class="o">-&gt;</span> <span class="kt">Transport</span> <span class="o">-&gt;</span> <span class="kt">S</span><span class="o">.</span><span class="kt">Settings</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">BufSize</span> <span class="o">-&gt;</span> <span class="kt">IO</span> <span class="kt">ByteString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Application</span> <span class="o">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span></code></pre></figure>
+
+<p>А вот пример чего-то похожего на Clojure, здесь вообще используются одни лишь hash-map-ы:</p>
+
+<figure class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">dummy-app</span><span class="w"> </span><span class="p">[</span><span class="n">req</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="no">:body</span><span class="w"> </span><span class="s">"It works"</span><span class="w"> </span><span class="no">:status</span><span class="w"> </span><span class="mi">200</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="nf">jetty/run-jetty</span><span class="w"> </span><span class="n">dummy-app</span><span class="w"> </span><span class="p">{</span><span class="no">:port</span><span class="w"> </span><span class="mi">5000</span><span class="w">
+                             </span><span class="no">:h2c?</span><span class="w"> </span><span class="n">true</span><span class="w">
+                             </span><span class="no">:h2?</span><span class="w"> </span><span class="n">true</span><span class="w">
+                             </span><span class="no">:ssl?</span><span class="w"> </span><span class="n">true</span><span class="w">
+                             </span><span class="no">:ssl-port</span><span class="w"> </span><span class="mi">5443</span><span class="w">
+                             </span><span class="no">:keystore</span><span class="w"> </span><span class="s">"..."</span><span class="w">
+                             </span><span class="no">:key-password</span><span class="w"> </span><span class="s">"..."</span><span class="p">})</span></code></pre></figure>
+
+<p>В целом, конечно, ‘Elegant Objects’ – очень хорошая книга для думающих программистов. Если честно, то у меня сложилось впечатление, что для ООП в понимании Егора язык Clojure или даже Haskell подходит гораздо больше, чем Java. Если переписать примеры из ‘Elegant Objects’ на Clojure, то, во-первых, и код станет короче, и, во-вторых, половину книги можно будет пропустить, т.к. в Clojure просто нету тех проблем, из-за которых книга и написана.</p>
+
+<h3 id="Литература">Литература</h3>
+
+<div id="link1">1. Bugayenko Ye., 2.5. Don't use public constants. In: Elegant Objects v1.1. Location: CreateSpace, 2016, pp.64-73.</div>
+<div id="link2">2. D.West, Observing the Object Difference. Location: Object Thinking, Microsoft Press, 2004.</div>
+<div id="link3">3. Буч Г., Глава 2. Объектный подход. В кн.: Объектно-ориентированное проектирование с примерами применения, Москва, "И.В.К", 1992, с. 38.
+<div id="link4">4. Пирс Б., 5.2. Программирование на языке лямбда-исчисления. В кн.: Типы в языках программирования, Москва, 2010, с.80</div>
+<div id="link5">5. Brady E., 1.2.4 Incomplete Definitions: Working with Holes. Location: Type-Driven Development with Idris, Manning, 2016, pp.7-9 </div>
+
+</div>
+
+  </article>
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://clojure.by/articles/2016-07/elegant-objects';
+        this.page.identifier = '/articles/2016-07/elegant-objects';
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//clojureblog.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+        <footer>
+  &copy; 2017 Всё о Clojure. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, made with secret alien technology</i>
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-15593919-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://clojure.by/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://clojure.by/js/main.js"></script>
+
+
+</body>
+</html>

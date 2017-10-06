@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Идиомы Clojure</title>
+  <meta name="description" content="Перевод статьи Кристофера Буи 'Clojure Idioms, Patterns, and Style'. В статье рассказывается о нескольких идиоматичных способах применения функций Clojure. О...">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://clojure.by/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://clojure.by/css/main.css">
+
+  <link rel="canonical" href="http://clojure.by/articles/2017-05/style">
+  <link rel="alternate" type="application/rss+xml" title="Clojure Blog" href="http://clojure.by/feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://clojure.by/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://clojure.by/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://clojure.by/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://clojure.by/" class="author_name">Всё о Clojure</a>
+  <span class="author_job">и других lisp-ах</span>
+  <span class="author_bio mbm">Clojure -- динамически-типизированный язык программирования общего назначения, работающий на JVM. Clojure является диалектом Lisp-а и использует его философию 'код-как-данные', а также механизм макросов. Clojure -- в основном функциональный язык с хорошей поддержкой неизменяемых персистентных структур данных.</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://clojure.by/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://clojure.by/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://clojure.by/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('d.bushenko@gmail.com', 'Hello from website');</script>
+      </li>
+    
+    
+    <li><a href="http://facebook.com/dmitry.bushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-facebook"></i></a></li>
+    
+    <li><a href="http://linkedin.com/in/dmitry-bushenko-58426342" class="social-link-item" target="_blank"><i class="fa fa-fw fa-linkedin"></i></a></li>
+    
+    
+    
+    <li><a href="http://github.com/dbushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    <li><a href="https://youtube.com/user/dbushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-youtube"></i></a></li>
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a href="http://clojure.by/" >На главную</a><br/><br/>
+
+<div class="post-image-feature">
+  <img class="feature-image" src="http://clojure.by/img/2017-05-01.jpg" alt="Идиомы Clojure feature image">
+
+  
+</div><!-- /.image-wrap -->
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Идиомы Clojure">Идиомы Clojure</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        1 MAY 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    5 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h3 id="Проверка-на-пустой-список">Проверка на пустой список</h3>
+
+<p>Не используйте <code class="highlighter-rouge">(not (empty? coll))</code>. Вместо этого следует применять <code class="highlighter-rouge">(seq coll)</code>.</p>
+
+<p><code class="highlighter-rouge">seq</code> возвращает <code class="highlighter-rouge">nil</code>, если коллекция пустая, иначе – возвращает саму эту коллекцию.</p>
+
+<p class="notice"><em>Примечание переводчика</em>: смотрите, как реализована функция <code class="highlighter-rouge">empty?</code>: <code class="highlighter-rouge">(defn empty? [coll] (not (seq coll)))</code>. Это значит, что конструкция <code class="highlighter-rouge">(not (empty? coll))</code> будет преобразована в <code class="highlighter-rouge">(not (not (seq coll)))</code>. Естественно, здесь лучше упростить до просто <code class="highlighter-rouge">(seq coll)</code>.</p>
+
+<h3 id="Выравнивание-результата-map-по-одному-уровню">Выравнивание результата map по одному уровню</h3>
+
+<p>Если результат вызова функции<code class="highlighter-rouge">map</code> возвращает список списков, то для “выравнивания” списков следует использовать <code class="highlighter-rouge">mapcat</code> вместо <code class="highlighter-rouge">(apply (concat (map...)))</code>:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">map</span><span class="w"> </span><span class="nb">list</span><span class="w"> </span><span class="p">(</span><span class="nb">range</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span><span class="w">
+ </span><span class="c1">;; =&gt; ((0) (1) (2) (3) (4) (5) (6) (7) (8) (9))</span><span class="w">
+
+ </span><span class="p">(</span><span class="nb">mapcat</span><span class="w"> </span><span class="nb">list</span><span class="w"> </span><span class="p">(</span><span class="nb">range</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span><span class="w">
+ </span><span class="c1">;; =&gt; (0 1 2 3 4 5 6 7 8 9)</span><span class="w">
+</span></code></pre></div></div>
+
+<p class="notice"><em>Примечание переводчика</em>: вот реализация <code class="highlighter-rouge">mapcat</code>: <code class="highlighter-rouge">(defn mapcat [f &amp; colls] (apply concat (apply map f colls)))</code>. Т.е. <code class="highlighter-rouge">mapcat</code> и есть <code class="highlighter-rouge">(apply concat (map ....))</code>.</p>
+
+<h3 id="Отображения-maps-являются-функциями">Отображения (maps) являются функциями</h3>
+
+<p>Отображения, как и ключевые слова, являются функциями.</p>
+
+<p>Для доступа к значениям отображения можно испозовать ключевое слово (keyword) вместо функции, само отображение или функцию <code class="highlighter-rouge">get</code>:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">{</span><span class="no">:a</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="no">:b</span><span class="w"> </span><span class="mi">2</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="nf">m</span><span class="w"> </span><span class="no">:a</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; 1</span><span class="w">
+ </span><span class="p">(</span><span class="no">:a</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; 1</span><span class="w">
+ </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="no">:a</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; 1</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Здесь наиболее предпочтительный вариант – средний, т.е. для доступа к значениям лучше использовать ключевое слово (keyword). Такой подход защитит вас от NullPointerException. Ключевое слово не может быть <code class="highlighter-rouge">nil</code>, в то время, как отображение – может.</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">nil</span><span class="w"> </span><span class="no">:a</span><span class="p">)</span><span class="w"> </span><span class="c1">;; CompilerException java.lang.IllegalArgumentException: Can't call nil, form: (nil :a)</span><span class="w">
+ </span><span class="p">(</span><span class="no">:a</span><span class="w"> </span><span class="n">nil</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; nil</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="Множества--тоже-функции">Множества – тоже функции</h3>
+
+<p>Как и отображения, множества также являются функциями. Их можно объявить при помощи функции <code class="highlighter-rouge">set</code> или <code class="highlighter-rouge">#{}</code>.</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">key-set</span><span class="w"> </span><span class="o">#</span><span class="p">{</span><span class="no">:a</span><span class="w"> </span><span class="no">:b</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="nf">key-set</span><span class="w"> </span><span class="no">:a</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; :a</span><span class="w">
+ </span><span class="p">(</span><span class="nf">key-set</span><span class="w"> </span><span class="no">:b</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; :b</span><span class="w">
+ </span><span class="p">(</span><span class="nf">key-set</span><span class="w"> </span><span class="no">:c</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; nil</span><span class="w">
+
+ </span><span class="p">(</span><span class="no">:a</span><span class="w"> </span><span class="n">key-set</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; :a</span><span class="w">
+ </span><span class="p">(</span><span class="no">:b</span><span class="w"> </span><span class="n">key-set</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; :b</span><span class="w">
+ </span><span class="p">(</span><span class="no">:c</span><span class="w"> </span><span class="n">key-set</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; nil</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Множество возвращает значение, если оно там есть, иначе – <code class="highlighter-rouge">nil</code>. Это свойство поможет нам делать некоторые интересные вещи.</p>
+
+<h3 id="Не-используйте-contains-на-множествах">Не используйте contains? на множествах</h3>
+
+<p>Если у вас есть множество, не используйте <code class="highlighter-rouge">contains?</code> чтобы проверить наличие элемента в нем. Просто используйте само множество как функцию.</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">key-set</span><span class="w"> </span><span class="o">#</span><span class="p">{</span><span class="no">:a</span><span class="w"> </span><span class="no">:b</span><span class="p">})</span><span class="w">
+
+ </span><span class="c1">;; Не надо так</span><span class="w">
+ </span><span class="p">(</span><span class="nb">contains?</span><span class="w"> </span><span class="n">key-set</span><span class="w"> </span><span class="no">:a</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; true</span><span class="w">
+
+ </span><span class="c1">;; Лучше вот так</span><span class="w">
+ </span><span class="p">(</span><span class="nf">key-set</span><span class="w"> </span><span class="no">:a</span><span class="p">)</span><span class="w"> </span><span class="c1">;; =&gt; :a</span><span class="w">
+</span></code></pre></div></div>
+
+<p class="notice"><em>Примечание переводчика</em>: здесь я не согласен с автором. Дело в том, что <code class="highlighter-rouge">contains?</code> корректно работает и на значениях <code class="highlighter-rouge">nil</code>, например <code class="highlighter-rouge">(contains? nil :abc)</code> просто вернёт <code class="highlighter-rouge">false</code>. Но если мы вызовем <code class="highlighter-rouge">(myset :abc)</code>, а <code class="highlighter-rouge">myset</code> будет равен <code class="highlighter-rouge">nil</code>, то возникнет исключение. Правда <code class="highlighter-rouge">(:abc myset)</code> отработает вполне нормально.</p>
+
+<h3 id="Идиома-every-key-set-keys-my-map">Идиома (every? key-set (keys my-map))</h3>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">key-set</span><span class="w"> </span><span class="o">#</span><span class="p">{</span><span class="no">:a</span><span class="w"> </span><span class="no">:b</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="nb">every?</span><span class="w"> </span><span class="n">key-set</span><span class="w"> </span><span class="p">[</span><span class="no">:a</span><span class="w"> </span><span class="no">:b</span><span class="p">])</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Эта идиома очень удобна для проверки JSON-ответов. С её помощью можно проверить, что в полученном ответе отображение содержит только ключи из некоторого множества.</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">endpoint-response</span><span class="w"> </span><span class="p">{</span><span class="no">:name</span><span class="w"> </span><span class="s">"Fat Tony"</span><span class="w">
+                         </span><span class="no">:address-line-1</span><span class="w"> </span><span class="s">"123 Fake St."</span><span class="w">
+                         </span><span class="no">:zip</span><span class="w"> </span><span class="s">"60606"</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">expected-keys</span><span class="w"> </span><span class="o">#</span><span class="p">{</span><span class="no">:name</span><span class="w"> </span><span class="no">:address-line-1</span><span class="w"> </span><span class="no">:zip</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="nb">every?</span><span class="w"> </span><span class="n">expected-keys</span><span class="w"> </span><span class="p">(</span><span class="nb">keys</span><span class="w"> </span><span class="n">endpoint-response</span><span class="p">))</span><span class="w"> </span><span class="c1">;; =&gt; true</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="conditionally-associng-onto-a-map">Conditionally Assoc’ing Onto A Map</h3>
+
+<p>Если вы используете на отображении макрос <code class="highlighter-rouge">-&gt;</code> or <code class="highlighter-rouge">-&gt;&gt;</code>, и вам нужно выполнить <code class="highlighter-rouge">assoc/dissoc</code> в зависимости от некоторого условия, используйте <code class="highlighter-rouge">cond-&gt;</code>:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">{</span><span class="no">:a</span><span class="w"> </span><span class="mi">1</span><span class="p">})</span><span class="w">
+
+ </span><span class="p">(</span><span class="nf">cond-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w">
+   </span><span class="no">:a</span><span class="w"> </span><span class="p">(</span><span class="nb">assoc</span><span class="w"> </span><span class="no">:b</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="c1">;; =&gt; {:a 1, :b 2}</span><span class="w">
+</span></code></pre></div></div>
+
+<p class="notice"><em>Примечание переводчика</em>: думаю, здесь следует пояснить поведение макроса <code class="highlighter-rouge">cond-&gt;</code>. Как и <code class="highlighter-rouge">-&gt;</code>, первым аргументом он принимает некоторое начальное значение, а затем – список пар “значение / операция”. Операция над аргументом <code class="highlighter-rouge">cond-&gt;</code> выполняется только в том случае, если значение из пары является истиной. Таким образом, в приведенном примере операция <code class="highlighter-rouge">(assoc :b 2)</code> выполнилась, потому что в паре <code class="highlighter-rouge">:a (assoc :b 2)</code> значение <code class="highlighter-rouge">:a</code> является истиной. Если бы там было <code class="highlighter-rouge">false (assoc :b 2)</code>, то <code class="highlighter-rouge">(assoc :b 2)</code> не выполнилось бы.</p>
+
+<p>Оригинал статьи – <a href="https://cb.codes/clojure-idioms/">здесь</a>. Перевод – Дмитрий Бушенко.</p>
+
+  </article>
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://clojure.by/articles/2017-05/style';
+        this.page.identifier = '/articles/2017-05/style';
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//clojureblog.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+        <footer>
+  &copy; 2017 Всё о Clojure. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, made with secret alien technology</i>
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-15593919-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://clojure.by/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://clojure.by/js/main.js"></script>
+
+
+</body>
+</html>

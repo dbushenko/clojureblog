@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Функция-диспетчер</title>
+  <meta name="description" content="Clojure-программисты хорошо знают, насколько Clojure -- мощный язык по сравнению с Java и прочими языками промышленной разработки. Выразительность Clojure по...">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://clojure.by/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://clojure.by/css/main.css">
+
+  <link rel="canonical" href="http://clojure.by/articles/2017-10/gk">
+  <link rel="alternate" type="application/rss+xml" title="Clojure Blog" href="http://clojure.by/feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://clojure.by/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://clojure.by/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://clojure.by/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://clojure.by/" class="author_name">Всё о Clojure</a>
+  <span class="author_job">и других lisp-ах</span>
+  <span class="author_bio mbm">Clojure -- динамически-типизированный язык программирования общего назначения, работающий на JVM. Clojure является диалектом Lisp-а и использует его философию 'код-как-данные', а также механизм макросов. Clojure -- в основном функциональный язык с хорошей поддержкой неизменяемых персистентных структур данных.</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://clojure.by/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://clojure.by/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://clojure.by/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('d.bushenko@gmail.com', 'Hello from website');</script>
+      </li>
+    
+    
+    <li><a href="http://facebook.com/dmitry.bushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-facebook"></i></a></li>
+    
+    <li><a href="http://linkedin.com/in/dmitry-bushenko-58426342" class="social-link-item" target="_blank"><i class="fa fa-fw fa-linkedin"></i></a></li>
+    
+    
+    
+    <li><a href="http://github.com/dbushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    <li><a href="https://youtube.com/user/dbushenko" class="social-link-item" target="_blank"><i class="fa fa-fw fa-youtube"></i></a></li>
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a href="http://clojure.by/" >На главную</a><br/><br/>
+
+<div class="post-image-feature">
+  <img class="feature-image" src="http://clojure.by/img/2017-10-06.jpg" alt="Функция-диспетчер feature image">
+
+  
+</div><!-- /.image-wrap -->
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Функция-диспетчер">Функция-диспетчер</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        6 OCT 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>Clojure-программисты хорошо знают, насколько Clojure – мощный язык по сравнению с Java и прочими языками промышленной разработки. Выразительность Clojure позволяет писать очень компактный и красивый код. Но, на мой взгляд, не это главное: важно, чтобы код был понятным. Зачем вся эта мощь и выразительность, если на выходе мы получаем всё ту же кучу известной субстанции, будто бы написанной code monkey?</p>
+
+<h3 id="Антипаттерн">Антипаттерн</h3>
+
+<p>В этой статье я бы хотел разобрать несколько фрагментов кода из изветной библиотеки <a href="https://github.com/yogthos/Selmer/">Selmer</a>. Давайте взглянем вот на эту <a href="https://github.com/yogthos/Selmer/blob/master/src/selmer/parser.clj">функцию</a>:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">make-resource-path</span><span class="w">
+  </span><span class="p">[</span><span class="nb">path</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="k">cond</span><span class="w">
+    </span><span class="p">(</span><span class="nb">nil?</span><span class="w"> </span><span class="nb">path</span><span class="p">)</span><span class="w">
+      </span><span class="n">nil</span><span class="w">
+    </span><span class="p">(</span><span class="nb">instance?</span><span class="w"> </span><span class="n">java.net.URL</span><span class="w"> </span><span class="nb">path</span><span class="p">)</span><span class="w">
+      </span><span class="p">(</span><span class="nf">append-slash</span><span class="w"> </span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="nb">path</span><span class="p">))</span><span class="w">
+    </span><span class="no">:else</span><span class="w">
+      </span><span class="p">(</span><span class="nf">append-slash</span><span class="w">
+       </span><span class="p">(</span><span class="nf">try</span><span class="w">
+         </span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="p">(</span><span class="nf">java.net.URL.</span><span class="w"> </span><span class="nb">path</span><span class="p">))</span><span class="w">
+         </span><span class="p">(</span><span class="nf">catch</span><span class="w"> </span><span class="n">java.net.MalformedURLException</span><span class="w"> </span><span class="n">err</span><span class="w">
+           </span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="s">"file:///"</span><span class="w"> </span><span class="nb">path</span><span class="p">))))))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Взгляните на похожий <a href="https://stackoverflow.com/questions/861500/url-to-load-resources-from-the-classpath-in-java">код</a> на java:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="n">URL</span> <span class="nf">toURL</span><span class="o">(</span><span class="n">URI</span> <span class="n">u</span><span class="o">,</span> <span class="n">ClassLoader</span> <span class="n">loader</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">MalformedURLException</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="s">"classpath"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getScheme</span><span class="o">()))</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="na">getPath</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">path</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"/"</span><span class="o">)){</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="s">"/"</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="na">getResource</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getScheme</span><span class="o">()</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">u</span><span class="o">.</span><span class="na">getPath</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//Assume that its a file.</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">File</span><span class="o">(</span><span class="n">u</span><span class="o">.</span><span class="na">getPath</span><span class="o">()).</span><span class="na">toURI</span><span class="o">().</span><span class="na">toURL</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">else</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="na">toURL</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Что Java-версия, что Clojure-версия не очень-то читабельны. Нарушен главный принцип single responsibility: функция делает слишком много. В Java-версии это усугубляется еще и вложенными if-ами: метод принимает слишком много решений. Для Java более-менее красивого решения здесь не написать в виду ограниченности самого языка, а вот Clojure предоставляет прекрасную альтернативу: мультиметоды. Вот версия make-resource-path, переписанная при помощи мультиметодов:</p>
+
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">declare</span><span class="w"> </span><span class="n">path-&gt;URL</span><span class="p">)</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defmulti</span><span class="w"> </span><span class="n">make-resource-path2</span><span class="w">
+  </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="nb">path</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="k">cond</span><span class="w">
+      </span><span class="p">(</span><span class="nb">nil?</span><span class="w"> </span><span class="nb">path</span><span class="p">)</span><span class="w"> </span><span class="no">:nil</span><span class="w">
+      </span><span class="p">(</span><span class="nb">instance?</span><span class="w"> </span><span class="n">java.net.URL</span><span class="w"> </span><span class="nb">path</span><span class="p">)</span><span class="w"> </span><span class="no">:url</span><span class="p">)))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defmethod</span><span class="w"> </span><span class="n">make-resource-path2</span><span class="w"> </span><span class="no">:nil</span><span class="w">
+  </span><span class="p">[</span><span class="nb">path</span><span class="p">]</span><span class="w">
+  </span><span class="n">nil</span><span class="p">)</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defmethod</span><span class="w"> </span><span class="n">make-resource-path2</span><span class="w"> </span><span class="no">:url</span><span class="w">
+  </span><span class="p">[</span><span class="nb">path</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="nb">path</span><span class="w">
+      </span><span class="nb">str</span><span class="w">
+      </span><span class="n">append-slash</span><span class="p">))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defmethod</span><span class="w"> </span><span class="n">make-resource-path2</span><span class="w"> </span><span class="no">:default</span><span class="w">
+  </span><span class="p">[</span><span class="nb">path</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="nb">path</span><span class="w">
+      </span><span class="n">path-&gt;URL</span><span class="w">
+      </span><span class="n">append-slash</span><span class="p">))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">path-&gt;URL</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="nf">try</span><span class="w">
+    </span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="p">(</span><span class="nf">java.net.URL.</span><span class="w"> </span><span class="nb">path</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">catch</span><span class="w"> </span><span class="n">java.net.MalformedURLException</span><span class="w"> </span><span class="n">err</span><span class="w">
+      </span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="s">"file:///"</span><span class="w"> </span><span class="nb">path</span><span class="p">))))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Вначале при помощи <em>defmulti</em> объявляется функция-диспетчер, которая передает управление в соответствующий метод. Обратите внимание, что в зарефакторенной версии каждая функция делает ровно одну вещь, и поэтому её значительно легче понимать, чем изначальный комбайн.</p>
+
+<h3 id="Паттерн">Паттерн</h3>
+
+<p>Впринципе, если пройтись по коду, то легко заметить, что подобный паттерн встречается и в других местах, например: <a href="https://github.com/yogthos/Selmer/blob/master/src/selmer/util.clj">split-by-args</a>, <a href="https://github.com/yogthos/Selmer/blob/master/src/selmer/template_parser.clj">consume-block</a> и т.д.</p>
+
+<p>Я вовсе не призываю отказываться от оператора <em>cond</em>, но полагаю, что не стоит загружать его слишком большим количеством работы. Если он делает еще что-то, кроме распознавания условия и возврата значения – стоит рассмотреть альтернативу в виде мультиметода.</p>
+
+  </article>
+</div>
+
+
+<div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://clojure.by/articles/2017-10/gk';
+        this.page.identifier = '/articles/2017-10/gk';
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//clojureblog.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+        <footer>
+  &copy; 2017 Всё о Clojure. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, made with secret alien technology</i>
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-15593919-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://clojure.by/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://clojure.by/js/main.js"></script>
+
+
+</body>
+</html>
